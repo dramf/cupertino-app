@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'model/app_state_model.dart';
+import 'styles.dart';
+
+const double _kDateTimePickerHeight = 216;
 
 class ShoppingCartTab extends StatefulWidget {
   @override
@@ -14,6 +18,44 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
   String? location;
   String? pin;
   DateTime dateTime = DateTime.now();
+
+  Widget _buildDateAndTimePicker(BuildContext context) => Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    CupertinoIcons.clock,
+                    color: CupertinoColors.lightBackgroundGray,
+                    size: 28,
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    'Delivery time',
+                    style: Styles.deliveryTimeLabel,
+                  ),
+                ],
+              ),
+              Text(
+                DateFormat.yMMMd().add_jm().format(dateTime),
+                style: Styles.deliveryTime,
+              ),
+            ],
+          ),
+          Container(
+            height: _kDateTimePickerHeight,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.dateAndTime,
+              initialDateTime: dateTime,
+              onDateTimeChanged: (newDate) =>
+                  setState(() => dateTime = newDate),
+            ),
+          ),
+        ],
+      );
 
   Widget _buildNameField() => CupertinoTextField(
         prefix: const Icon(
@@ -93,6 +135,11 @@ class _ShoppingCartTabState extends State<ShoppingCartTab> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _buildLocationField(),
+            );
+          case 3:
+            return Padding(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 24),
+              child: _buildDateAndTimePicker(context),
             );
           default:
         }
